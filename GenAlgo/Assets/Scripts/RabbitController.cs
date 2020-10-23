@@ -14,8 +14,15 @@ public class RabbitController : MonoBehaviour
     public float Stamina; //done
     public float PerceptionRange; //done
     public float PerceptionChance; //done
+
+    [SerializeField]
     private float StaminaBar;
     private GameObject predatorObject;
+
+    private void Start()
+    {
+        StaminaBar = Stamina;
+    }
 
     public List<float> GetGenes()
     {
@@ -51,8 +58,6 @@ public class RabbitController : MonoBehaviour
         {
             MoveRandomly();
         }
-
-        StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);
     }
 
     private void MoveRandomly()
@@ -61,17 +66,18 @@ public class RabbitController : MonoBehaviour
         Vector3 newPos = transform.position + direction * Time.deltaTime;
         
         Debug.Log($"direction = {direction}, newPos = {newPos}");
-        transform.LookAt(newPos);
+        //transform.LookAt(newPos);
         transform.position = newPos;
-        Debug.Log("Moving randomly...");
+        //Debug.Log("Moving randomly...");
+
+        StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);
     }
 
     private bool CheckStress()
     {
-        //float a = Random.Range(0f, 1f);
         if (Random.Range(0f, 1f) <= StunPosibility)
         {
-            //Debug.Log($"Stunned {a} <= {StunPosibility}");
+            StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);
             return false;
         }
 
@@ -86,19 +92,30 @@ public class RabbitController : MonoBehaviour
             return;
         }
 
-        Vector3 direction = (transform.position - predatorObject.transform.position).normalized;
 
         if (StaminaBar > 0)
         {
+            Vector3 direction = (transform.position - predatorObject.transform.position).normalized;
             Vector3 newPos = transform.position + direction * Speed * Time.deltaTime;
+            
+            /*
+            Vector3 targetDirection = predatorObject.transform.position - transform.position;
+            float singleStep = Speed * Time.deltaTime;
+            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+            // Debug.DrawRay(transform.position, newDirection, Color.red);
+            var newRotation = Quaternion.LookRotation(newDirection);
+            var xd = newRotation.eulerAngles;
+            xd.z = 90f;
+            newRotation = Quaternion.Euler(xd);
+            transform.rotation = newRotation;
+            */
 
-            transform.LookAt(newPos);
             transform.position = newPos;
             StaminaBar = Mathf.Max(StaminaBar - Time.deltaTime, 0);
         }
         else
         {
-            StaminaBar = Mathf.Min(Stamina + Time.deltaTime, Stamina);
+            StaminaBar = -0.5f;
         }
 
         Debug.Log("Running away!");
@@ -125,6 +142,6 @@ public class RabbitController : MonoBehaviour
 
     public void HasBeenSeen()
     {
-
+        //TODO
     }
 }
