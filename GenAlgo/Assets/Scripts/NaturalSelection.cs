@@ -55,6 +55,7 @@ public class NaturalSelection : MonoBehaviour
         List<RabbitController> OldRabbits;
         List<int> randomIndexes;
 
+        Debug.Log($"First: {Parents[0].GetFitness()}, Second: {Parents[1].GetFitness()}, Third: {Parents[2].GetFitness()}");
         OldRabbits = rabbits.GetRange(Parents.Count, (int)PopulationNumber - Parents.Count - 1);
         foreach (RabbitController oldRabbit in OldRabbits)
         {
@@ -64,6 +65,11 @@ public class NaturalSelection : MonoBehaviour
                 Parents[randomIndexes[0]],
                 Parents[randomIndexes[1]],
                 oldRabbit);
+        }
+
+        foreach(RabbitController rabbit in rabbits)
+        {
+            rabbit.ResetFitness();
         }
 
         SpawnGeneration();
@@ -81,8 +87,6 @@ public class NaturalSelection : MonoBehaviour
         {
             indexes[1] = Random.Range(0, ParentsAmount);
         }
-
-        Debug.Log($"{indexes[0]} : {indexes[1]}");
 
         return indexes;
     }
@@ -121,13 +125,11 @@ public class NaturalSelection : MonoBehaviour
 
         for (int i = 0; i < MotherGenes.Count / 2; i++)
         {
-            Debug.Log($"First: {i} out of {MotherGenes.Count / 2}");
             NewParams.Add(FirstParentGenes[i]);
         }
 
         for (int i = MotherGenes.Count / 2; i < MotherGenes.Count; i++)
         {
-            Debug.Log($"Second: {i} out of {MotherGenes.Count / 2}");
             NewParams.Add(SecondParentGenes[i]);
         }
 

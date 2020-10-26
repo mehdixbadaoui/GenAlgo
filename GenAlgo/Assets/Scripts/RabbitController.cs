@@ -67,7 +67,6 @@ public class RabbitController : MonoBehaviour
         Stamina = new_params[4];
         PerceptionRange = new_params[5];
         PerceptionChance = new_params[6];
-
     }
 
     public void ChangeParams(List<float> NewGenes, Vector3 NewColor) // just in case you already worked on this func
@@ -76,13 +75,17 @@ public class RabbitController : MonoBehaviour
         ChangeColor(NewColor);
     }
 
+    public void ResetFitness()
+    {
+        fitness = 0;
+    }
+
     private void ChangeColor(Vector3 NewColor)
     {
         RabbitColor = NewColor;
 
-        Debug.Log($"Before: {GetComponent<Renderer>().material.color}");
         GetComponent<Renderer>().material.color = new Color(NewColor.x, NewColor.y, NewColor.z);
-        Debug.Log($"After: {GetComponent<Renderer>().material.color}");
+        //Debug.Log($"After: {GetComponent<Renderer>().material.color}");
     }
 
     public float GetFitness()
@@ -116,15 +119,17 @@ public class RabbitController : MonoBehaviour
 
     private void MoveRandomly()
     {
-        Vector3 v = new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f));
-        Vector3 direction = (transform.position - v).normalized;
+        Vector3 RandomDirection = new Vector3(Random.Range(-50f, 50f), transform.position.y, Random.Range(-50f, 50f));
+        Vector3 direction = (transform.position - RandomDirection).normalized;
         Vector3 newPos = transform.position + direction * Time.deltaTime;
         
+        newPos.x = Mathf.Clamp(newPos.x, -50f, 50f);
+        newPos.z = Mathf.Clamp(newPos.z, -50f, 50f);
         //Debug.Log($"direction = {direction}, newPos = {newPos}");
         //transform.LookAt(newPos);
         transform.position = newPos;
+        
         Vector3 facing = (direction - transform.position).normalized;
-
         //Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
         //transform.rotation = rotation;
         //transform.rotation = Quaternion.Euler(new Vector3(0, v.y, 0));
@@ -157,7 +162,6 @@ public class RabbitController : MonoBehaviour
             //Debug.Log("Too far");
             return;
         }
-
 
         if (StaminaBar > 0)
         {

@@ -13,22 +13,27 @@ public class FoxController : MonoBehaviour
     //public float SniffRange;
     public float Speed;
     public MeshRenderer TerrainTexture;
-    private Vector3 random_direction;
 
+    private GameObject targetDebug;
+    private Vector3 RandomDirection;
     private Vector3 MovementDirection;
 
     void Start()
     {
-        InvokeRepeating("changeRandom", 0, 2);
+        //InvokeRepeating("ChangeRandom", 0, 2);
     }
 
     void Update()
     {
         Random.InitState((int)System.DateTime.Now.Ticks);
 
-        
         MovementDirection = NextDirection();
-        if (transform.position == random_direction) changeRandom();
+
+        if (Vector3.Distance(transform.position, RandomDirection) < 1)
+        {
+            ChangeRandom();
+        }
+
         Move(MovementDirection);
 
         CheckPray();
@@ -39,9 +44,9 @@ public class FoxController : MonoBehaviour
         transform.position += direction * Speed * Time.deltaTime;
     }
 
-    private void changeRandom()
+    private void ChangeRandom()
     {
-        random_direction = new Vector3(Random.Range(-50f, 50f), transform.position.y, Random.Range(-50f, 50f));
+        RandomDirection = new Vector3(Random.Range(-50f, 50f), transform.position.y, Random.Range(-50f, 50f));
     }
 
     private Vector3 NextDirection()
@@ -49,7 +54,7 @@ public class FoxController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, PerceptionRange);
         Vector3 direction;
         Collider hit;
-        float probability = 0f;
+        float probability;
         float maxProbability = 0f;
         int index = -1;
 
@@ -59,26 +64,26 @@ public class FoxController : MonoBehaviour
             if (hit.CompareTag("Prey"))
             {
                 Color difference = TerrainTexture.material.color - hit.GetComponent<MeshRenderer>().material.color;
-                probability = (difference.r + difference.g + difference.b) / Vector3.Distance(transform.position, hit.transform.position);
+                probability = (difference.r + difference.g + difference.b); // Vector3.Distance(transform.position, hit.transform.position);
                 if (probability > maxProbability)
                 {
                     maxProbability = probability;
                     index = i;
                 }
             }
-
         }
 
         if (index != -1)
         {
+            targetDebug = hitColliders[index].gameObject;
             direction = (hitColliders[index].transform.position - transform.position).normalized;
         }
         else
         {
-            direction = (random_direction - transform.position).normalized;
+            direction = (RandomDirection - transform.position).normalized;
+            //Debug.Log(direction);
         }
 
-        Debug.Log(direction);
         return direction;
     }
 
