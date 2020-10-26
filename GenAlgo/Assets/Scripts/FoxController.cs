@@ -13,20 +13,22 @@ public class FoxController : MonoBehaviour
     //public float SniffRange;
     public float Speed;
     public MeshRenderer TerrainTexture;
+    private Vector3 random_direction;
 
     private Vector3 MovementDirection;
 
     void Start()
     {
-        
+        InvokeRepeating("changeRandom", 0, 2);
     }
 
     void Update()
     {
         Random.InitState((int)System.DateTime.Now.Ticks);
 
+        
         MovementDirection = NextDirection();
-
+        if (transform.position == random_direction) changeRandom();
         Move(MovementDirection);
 
         CheckPray();
@@ -35,6 +37,11 @@ public class FoxController : MonoBehaviour
     private void Move(Vector3 direction)
     {
         transform.position += direction * Speed * Time.deltaTime;
+    }
+
+    private void changeRandom()
+    {
+        random_direction = new Vector3(Random.Range(-50f, 50f), transform.position.y, Random.Range(-50f, 50f));
     }
 
     private Vector3 NextDirection()
@@ -68,7 +75,7 @@ public class FoxController : MonoBehaviour
         }
         else
         {
-            direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
+            direction = (random_direction - transform.position).normalized;
         }
 
         Debug.Log(direction);

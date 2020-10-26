@@ -72,11 +72,7 @@ public class RabbitController : MonoBehaviour
 
     public void ChangeParams(List<float> NewGenes, Vector3 NewColor) // just in case you already worked on this func
     {
-        for (int i = 0; i < NewGenes.Count; i++)
-        {
-            SetGenes(NewGenes);
-        }
-
+        SetGenes(NewGenes);
         ChangeColor(NewColor);
     }
 
@@ -120,14 +116,18 @@ public class RabbitController : MonoBehaviour
 
     private void MoveRandomly()
     {
-        Vector3 direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
+        Vector3 v = new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f));
+        Vector3 direction = (transform.position - v).normalized;
         Vector3 newPos = transform.position + direction * Time.deltaTime;
         
         //Debug.Log($"direction = {direction}, newPos = {newPos}");
         //transform.LookAt(newPos);
         transform.position = newPos;
         Vector3 facing = (direction - transform.position).normalized;
-        transform.rotation = Quaternion.Euler(new Vector3(0, facing.y, 90));
+
+        //Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
+        //transform.rotation = rotation;
+        //transform.rotation = Quaternion.Euler(new Vector3(0, v.y, 0));
 
         //Debug.Log("Moving randomly...");
 
