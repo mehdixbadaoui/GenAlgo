@@ -104,13 +104,18 @@ public class RabbitController : MonoBehaviour
 
     private bool CheckStress()
     {
-        if (Random.Range(0f, 1f) <= StunPosibility)
+        if (HasBeenSeen())
         {
-            StaminaBar = -0.2f;
-            return false;
+            if (Random.Range(0f, 1f) <= StunPosibility)
+            {
+                StaminaBar = -0.2f;
+                return false;
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private void RunAway()
@@ -169,8 +174,10 @@ public class RabbitController : MonoBehaviour
         return false;
     }
 
-    public void HasBeenSeen()
+    public bool HasBeenSeen()
     {
         //TODO
+
+        return true;
     }
 }
