@@ -15,6 +15,9 @@ public class RabbitController : MonoBehaviour
     public float PerceptionRange; //done
     public float PerceptionChance; //done
 
+    public float fitness;
+
+
     [SerializeField]
     private float StaminaBar;
     private GameObject predatorObject;
@@ -41,6 +44,16 @@ public class RabbitController : MonoBehaviour
         };
 
         return Genes;
+    }
+
+    public float getFitness()
+    {
+        return fitness;
+    }
+
+    public void calc_fitness()
+    {
+        //SOMEHOW CALCULATE THE FITNESS.
     }
 
     private void Update()
