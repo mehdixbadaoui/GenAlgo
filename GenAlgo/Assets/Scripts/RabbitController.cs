@@ -29,6 +29,14 @@ public class RabbitController : MonoBehaviour
         StaminaBar = Stamina;
     }
 
+    public void InstantiateParams()
+    {
+        Speed = Random.Range(2f, 10f);
+        Stamina = Random.Range(1f, 5f);
+        PerceptionRange = Random.Range(0f, 20f);
+        PerceptionChance = Random.Range(0f, 1f);
+    }
+
     public List<float> GetGenes()
     {
         List<float> Genes = new List<float>()
@@ -57,7 +65,7 @@ public class RabbitController : MonoBehaviour
 
     }
 
-    public void ChangeParams2(List<float> NewGenes, Vector3 NewColor) // just in case you already worked on this func
+    public void ChangeParams(List<float> NewGenes, Vector3 NewColor) // just in case you already worked on this func
     {
         for (int i = 0; i < NewGenes.Count; i++)
         {

@@ -20,6 +20,7 @@ public class NaturalSelection : MonoBehaviour
         {
             GameObject temp = Instantiate(RabbitObject, GetRandomPosition(), RabbitObject.transform.rotation, transform);
             rabbits.Add(temp.GetComponent<RabbitController>());
+            rabbits[i].InstantiateParams();
         }
     }
 
