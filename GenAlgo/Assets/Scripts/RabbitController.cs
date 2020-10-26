@@ -7,16 +7,13 @@ public class RabbitController : MonoBehaviour
     public float Stupidity; 
     public float StunPosibility; //done
     public float FearRate;
-    public float RabbitColorR;
-    public float RabbitColorG;
-    public float RabbitColorB; // (first + second) / 2
+    public Vector3 RabbitColor; // (first + second) / 2
     public float Speed; //done
     public float Stamina; //done
     public float PerceptionRange; //done
     public float PerceptionChance; //done
 
     public float fitness;
-
 
     [SerializeField]
     private float StaminaBar;
@@ -34,9 +31,6 @@ public class RabbitController : MonoBehaviour
             Stupidity,
             StunPosibility,
             FearRate,
-            RabbitColorR,
-            RabbitColorG,
-            RabbitColorB,
             Speed,
             Stamina,
             PerceptionRange,
@@ -45,15 +39,30 @@ public class RabbitController : MonoBehaviour
 
         return Genes;
     }
+    
+    public void ChangeParams(List<float> NewGenes, Vector3 NewColor)
+    {
+        for (int i = 0; i < NewGenes.Count; i++)
+        {
+            //TODO
+        }
 
-    public float getFitness()
+        ChangeColor(NewColor);
+    }
+
+    private void ChangeColor(Vector3 NewColor)
+    {
+        GetComponent<MeshRenderer>().material.SetColor(0, new Color(NewColor.x, NewColor.y, NewColor.z));
+    }
+
+    public float GetFitness()
     {
         return fitness;
     }
 
-    public void calc_fitness()
+    private void CalcFitness()
     {
-        //SOMEHOW CALCULATE THE FITNESS.
+        fitness += Time.deltaTime;
     }
 
     private void Update()
@@ -71,6 +80,8 @@ public class RabbitController : MonoBehaviour
         {
             MoveRandomly();
         }
+
+        CalcFitness();
     }
 
     private void MoveRandomly()
@@ -78,7 +89,7 @@ public class RabbitController : MonoBehaviour
         Vector3 direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
         Vector3 newPos = transform.position + direction * Time.deltaTime;
         
-        Debug.Log($"direction = {direction}, newPos = {newPos}");
+        //Debug.Log($"direction = {direction}, newPos = {newPos}");
         //transform.LookAt(newPos);
         transform.position = newPos;
         //Debug.Log("Moving randomly...");
@@ -90,7 +101,7 @@ public class RabbitController : MonoBehaviour
     {
         if (Random.Range(0f, 1f) <= StunPosibility)
         {
-            StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);
+            StaminaBar = -0.2f;
             return false;
         }
 
@@ -131,7 +142,7 @@ public class RabbitController : MonoBehaviour
             StaminaBar = -0.5f;
         }
 
-        Debug.Log("Running away!");
+        //Debug.Log("Running away!");
     }
 
     private bool CheckPreStress()
