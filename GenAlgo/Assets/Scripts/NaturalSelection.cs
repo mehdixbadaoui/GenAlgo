@@ -13,11 +13,11 @@ public class NaturalSelection : MonoBehaviour
 
     private void Start()
     {
-        List<RabbitController> rabbits = new List<RabbitController>();
+        rabbits = new List<RabbitController>();
 
         for (int i = 0; i < PopulationNumber; i++)
         {
-            GameObject temp = Instantiate(RabbitObject, GetRandomPosition(), Quaternion.identity, transform);
+            GameObject temp = Instantiate(RabbitObject, GetRandomPosition(), RabbitObject.transform.rotation, transform);
             rabbits.Add(temp.GetComponent<RabbitController>());
         }
     }
@@ -91,7 +91,7 @@ public class NaturalSelection : MonoBehaviour
         float newX = Random.Range(-boundsX / 2, boundsX / 2);
         float newZ = Random.Range(-boundsZ / 2, boundsZ / 2);
 
-        Vector3 newPos = center + new Vector3(newX, transform.position.y, newZ);
+        Vector3 newPos = center + new Vector3(newX, transform.position.y + .5f, newZ);
 
         return newPos;
     }

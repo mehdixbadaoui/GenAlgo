@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class RabbitController : MonoBehaviour
 {
+    /*todo
+     * change params function
+     * mvt rotation
+     * borders
+     */
     public float Stupidity; 
     public float StunPosibility; //done
     public float FearRate;
