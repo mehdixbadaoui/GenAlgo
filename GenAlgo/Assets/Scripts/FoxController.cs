@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class FoxController : MonoBehaviour
 {
+    //TODO:
+    //1. REWRITE RANDOM MOVEMENT
+    //2. REWRITE TARGET ACQUIRING
+
     public float EatingRange;
     public float PerceptionRange;
     //public float SniffRange;
@@ -46,6 +50,7 @@ public class FoxController : MonoBehaviour
         }
 
         direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
+        Debug.Log(direction);
         return direction;
     }
 

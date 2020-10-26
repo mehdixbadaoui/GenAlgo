@@ -7,6 +7,7 @@ public class NaturalSelection : MonoBehaviour
 {
     public float PopulationNumber;
     public GameObject RabbitObject;
+    public GameObject PredatorObject;
     public Renderer TerrainRender;
 
     private List<RabbitController> rabbits;
@@ -19,6 +20,7 @@ public class NaturalSelection : MonoBehaviour
         {
             GameObject temp = Instantiate(RabbitObject, GetRandomPosition(), RabbitObject.transform.rotation, transform);
             rabbits.Add(temp.GetComponent<RabbitController>());
+            rabbits[i].InstantiateParams();
         }
     }
 
@@ -26,14 +28,23 @@ public class NaturalSelection : MonoBehaviour
     {
         if (rabbits.Count(o => o.gameObject.activeInHierarchy == true) == 10)
         {
+            PredatorObject.SetActive(false);
             CreateGeneration();
+            PredatorToStart();
         }
+    }
+
+    private void PredatorToStart()
+    {
+        PredatorObject.transform.position = TerrainRender.bounds.center;
+        PredatorObject.SetActive(true);
     }
 
     private void SpawnGeneration()
     {
         for (int i = 0; i < PopulationNumber; i++)
         {
+            rabbits[i].gameObject.SetActive(true);
             rabbits[i].gameObject.transform.position = GetRandomPosition();
         }
     }
@@ -41,28 +52,18 @@ public class NaturalSelection : MonoBehaviour
     private void CreateGeneration()
     {
         List<RabbitController> Parents = TopTen();
-        List<RabbitController> OldRabbits = new List<RabbitController>(2);
+        List<RabbitController> OldRabbits;
         List<int> randomIndexes;
 
-        for (int i = Parents.Count; i < PopulationNumber; i += 2)
+        OldRabbits = rabbits.GetRange(Parents.Count, (int)PopulationNumber - Parents.Count - 1);
+        foreach (RabbitController oldRabbit in OldRabbits)
         {
             randomIndexes = GetRandomIndexes(10);
-
-            OldRabbits[0] = rabbits[i];
-
-            if (i != PopulationNumber - 1)
-            {
-                OldRabbits[1] = rabbits[i + 1];
-            }
-            else
-            {
-                OldRabbits.RemoveAt(1);
-            }
 
             Crossover(
                 Parents[randomIndexes[0]],
                 Parents[randomIndexes[1]],
-                OldRabbits);
+                oldRabbit);
         }
 
         SpawnGeneration();
@@ -70,15 +71,18 @@ public class NaturalSelection : MonoBehaviour
 
     private List<int> GetRandomIndexes(int ParentsAmount)
     {
-        List<int> indexes = new List<int>();
-
-        indexes[0] = Random.Range(0, ParentsAmount);
-        indexes[1] = Random.Range(0, ParentsAmount);
+        List<int> indexes = new List<int>
+        {
+            Random.Range(0, ParentsAmount),
+            Random.Range(0, ParentsAmount)
+        };
 
         while (indexes[0] == indexes[1])
         {
             indexes[1] = Random.Range(0, ParentsAmount);
         }
+
+        Debug.Log($"{indexes[0]} : {indexes[1]}");
 
         return indexes;
     }
@@ -96,41 +100,39 @@ public class NaturalSelection : MonoBehaviour
         return newPos;
     }
 
-    public void Crossover(RabbitController Mother, RabbitController Father, List<RabbitController> ReplaceRabbits)
+    public void Crossover(RabbitController Mother, RabbitController Father, RabbitController ReplaceRabbit)
     {
         List<float> MotherGenes = Mother.GetGenes();
         List<float> FatherGenes = Father.GetGenes();
-        List<float> NewParams = new List<float>(MotherGenes.Count);
+        List<float> NewParams = new List<float>();
         Vector3 NewColor;
         List<float> FirstParentGenes, SecondParentGenes;
 
-        for (int j = 0; j < ReplaceRabbits.Count; j++)
+        if (Random.value <= 0.5)
         {
-            if (j == 0)
-            {
-                FirstParentGenes = MotherGenes;
-                SecondParentGenes = FatherGenes;
-            }
-            else
-            {
-                FirstParentGenes = FatherGenes;
-                SecondParentGenes = MotherGenes;
-            }
-
-            for (int i = 0; i < MotherGenes.Count / 2; i++)
-            {
-                NewParams[i] = FirstParentGenes[i];
-            }
-
-            for (int i = MotherGenes.Count / 2; i < MotherGenes.Count; i++)
-            {
-                NewParams[i] = SecondParentGenes[i];
-            }
-
-            NewColor = (Mother.RabbitColor + Father.RabbitColor) / 2;
-            //ReplaceRabbits[j].ChangeParams(NewParams, NewColor);
-            ReplaceRabbits[j].ChangeParams2(NewParams, NewColor);
+            FirstParentGenes = MotherGenes;
+            SecondParentGenes = FatherGenes;
         }
+        else
+        {
+            FirstParentGenes = FatherGenes;
+            SecondParentGenes = MotherGenes;
+        }
+
+        for (int i = 0; i < MotherGenes.Count / 2; i++)
+        {
+            Debug.Log($"First: {i} out of {MotherGenes.Count / 2}");
+            NewParams.Add(FirstParentGenes[i]);
+        }
+
+        for (int i = MotherGenes.Count / 2; i < MotherGenes.Count; i++)
+        {
+            Debug.Log($"Second: {i} out of {MotherGenes.Count / 2}");
+            NewParams.Add(SecondParentGenes[i]);
+        }
+
+        NewColor = (Mother.RabbitColor + Father.RabbitColor) / 2;
+        ReplaceRabbit.ChangeParams(NewParams, NewColor);
     }
 
     public List<RabbitController> TopTen()

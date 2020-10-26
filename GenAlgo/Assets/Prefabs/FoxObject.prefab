@@ -93,7 +93,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836ebc9a6375e75428f7e2e5b49d6d20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EatingRange: 0
+  EatingRange: 2
+  PerceptionRange: 10
+  Speed: 1.8
 --- !u!64 &1133151146608911874
 MeshCollider:
   m_ObjectHideFlags: 0
