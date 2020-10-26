@@ -109,6 +109,9 @@ public class RabbitController : MonoBehaviour
         //Debug.Log($"direction = {direction}, newPos = {newPos}");
         //transform.LookAt(newPos);
         transform.position = newPos;
+        Vector3 facing = (direction - transform.position).normalized;
+        transform.rotation = Quaternion.Euler(new Vector3(0, facing.y, 90));
+
         //Debug.Log("Moving randomly...");
 
         StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);

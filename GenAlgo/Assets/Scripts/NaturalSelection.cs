@@ -128,7 +128,8 @@ public class NaturalSelection : MonoBehaviour
             }
 
             NewColor = (Mother.RabbitColor + Father.RabbitColor) / 2;
-            ReplaceRabbits[j].ChangeParams(NewParams, NewColor);
+            //ReplaceRabbits[j].ChangeParams(NewParams, NewColor);
+            ReplaceRabbits[j].ChangeParams2(NewParams, NewColor);
         }
     }
 
