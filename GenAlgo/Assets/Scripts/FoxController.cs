@@ -12,6 +12,7 @@ public class FoxController : MonoBehaviour
     public float PerceptionRange;
     //public float SniffRange;
     public float Speed;
+    public MeshRenderer TerrainTexture;
 
     private Vector3 MovementDirection;
 
@@ -22,6 +23,8 @@ public class FoxController : MonoBehaviour
 
     void Update()
     {
+        Random.InitState((int)System.DateTime.Now.Ticks);
+
         MovementDirection = NextDirection();
 
         Move(MovementDirection);
@@ -38,18 +41,36 @@ public class FoxController : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, PerceptionRange);
         Vector3 direction;
+        Collider hit;
+        float probability = 0f;
+        float maxProbability = 0f;
+        int index = -1;
 
-        foreach (Collider hit in hitColliders)
+        for (int i = 0; i < hitColliders.Length; i++)
         {
+            hit = hitColliders[i];
             if (hit.CompareTag("Prey"))
             {
-                //TODO
-                direction = (hit.transform.position - transform.position).normalized;
-                return direction;
+                Color difference = TerrainTexture.material.color - hit.GetComponent<MeshRenderer>().material.color;
+                probability = (difference.r + difference.g + difference.b) / Vector3.Distance(transform.position, hit.transform.position);
+                if (probability > maxProbability)
+                {
+                    maxProbability = probability;
+                    index = i;
+                }
             }
+
         }
 
-        direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
+        if (index != -1)
+        {
+            direction = (hitColliders[index].transform.position - transform.position).normalized;
+        }
+        else
+        {
+            direction = (transform.position - new Vector3(Random.Range(-1f, 1f), transform.position.y, Random.Range(-1f, 1f))).normalized;
+        }
+
         Debug.Log(direction);
         return direction;
     }

@@ -27,6 +27,7 @@ public class RabbitController : MonoBehaviour
     private void Start()
     {
         StaminaBar = Stamina;
+        Random.InitState((int)System.DateTime.Now.Ticks);
     }
 
     public void InstantiateParams()
@@ -35,6 +36,10 @@ public class RabbitController : MonoBehaviour
         Stamina = Random.Range(1f, 5f);
         PerceptionRange = Random.Range(0f, 20f);
         PerceptionChance = Random.Range(0f, 1f);
+
+        Vector3 NewColor = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+
+        ChangeColor(NewColor);
     }
 
     public List<float> GetGenes()
@@ -77,7 +82,11 @@ public class RabbitController : MonoBehaviour
 
     private void ChangeColor(Vector3 NewColor)
     {
-        GetComponent<MeshRenderer>().material.SetColor(0, new Color(NewColor.x, NewColor.y, NewColor.z));
+        RabbitColor = NewColor;
+
+        Debug.Log($"Before: {GetComponent<Renderer>().material.color}");
+        GetComponent<Renderer>().material.color = new Color(NewColor.x, NewColor.y, NewColor.z);
+        Debug.Log($"After: {GetComponent<Renderer>().material.color}");
     }
 
     public float GetFitness()
