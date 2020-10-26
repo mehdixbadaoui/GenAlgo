@@ -44,12 +44,24 @@ public class RabbitController : MonoBehaviour
 
         return Genes;
     }
-    
-    public void ChangeParams(List<float> NewGenes, Vector3 NewColor)
+
+    private void SetGenes(List<float> new_params)
+    {
+        Stupidity = new_params[0];
+        StunPosibility = new_params[1];
+        FearRate = new_params[2];
+        Speed = new_params[3];
+        Stamina = new_params[4];
+        PerceptionRange = new_params[5];
+        PerceptionChance = new_params[6];
+
+    }
+
+    public void ChangeParams2(List<float> NewGenes, Vector3 NewColor) // just in case you already worked on this func
     {
         for (int i = 0; i < NewGenes.Count; i++)
         {
-            //TODO
+            SetGenes(NewGenes);
         }
 
         ChangeColor(NewColor);
@@ -97,6 +109,9 @@ public class RabbitController : MonoBehaviour
         //Debug.Log($"direction = {direction}, newPos = {newPos}");
         //transform.LookAt(newPos);
         transform.position = newPos;
+        Vector3 facing = (direction - transform.position).normalized;
+        transform.rotation = Quaternion.Euler(new Vector3(0, facing.y, 90));
+
         //Debug.Log("Moving randomly...");
 
         StaminaBar = Mathf.Min(StaminaBar + Time.deltaTime, Stamina);
